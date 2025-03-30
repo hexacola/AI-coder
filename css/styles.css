@@ -317,7 +317,7 @@ header p {
     border: 1px solid var(--xp-input-border);
     padding: 6px 8px;
     background-color: var(--xp-window-bg);
-    line-height: 1.4;
+    line-height: 1.5; /* Slightly more spacing for dialogue */
     box-shadow: inset 1px 1px 1px rgba(0,0,0,0.1);
     /* Smooth scroll behavior */
     scroll-behavior: smooth;
@@ -857,4 +857,37 @@ button, .plan-step {
 /* Ensure good spacing and alignment consistency */
 /* Removed the empty .controls .xp-window-content > * {} rule from line 858 */
 
-/* ... potentially other existing code ... */ 
+/* NEW Discussion Turn Styles */
+.discussion-turn {
+    margin-bottom: 6px;
+    padding: 4px 8px;
+    border-radius: 3px;
+    background-color: #f9f9f9; /* Light background for turns */
+    border: 1px solid #e0e0e0;
+    border-left-width: 4px;
+    border-left-color: #ccc; /* Default border color */
+    font-size: 11px;
+    white-space: pre-wrap; /* Allow wrapping */
+    word-wrap: break-word;
+}
+
+.discussion-turn:last-child {
+    margin-bottom: 0;
+}
+
+/* Example Agent-Specific Styles */
+.discussion-turn.agent-architect { border-left-color: #3B78DE; /* Blue */ }
+.discussion-turn.agent-frontend-dev { border-left-color: #4CAF50; /* Green */ }
+.discussion-turn.agent-backend-js-dev { border-left-color: #FFC107; /* Yellow */ }
+.discussion-turn.agent-css-designer { border-left-color: #9C27B0; /* Purple */ }
+.discussion-turn.agent-qa-tester { border-left-color: #f44336; /* Red */ }
+.discussion-turn.agent-team { border-left-color: #795548; /* Brown */ }
+
+/* Style for meta messages in discussion */
+.discussion-turn:not([class*="agent-"]) { /* Turns without specific agent class */
+    font-style: italic;
+    color: #555;
+    background-color: #efefef;
+}
+
+/* ... rest of styles.css ... */ 

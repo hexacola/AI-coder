@@ -179,7 +179,9 @@
          <!-- Plan Area -->
         <div id="plan-area" class="xp-window">
             <div class="xp-window-inner-border">
-                <div class="xp-title-bar">Enhancement Plan & Progress</div>
+                <div class="xp-title-bar">
+                    <span id="plan-title">Enhancement Plan & Progress</span>
+                </div>
                 <div class="xp-window-content">
                     <div id="plan-display">Enhancement plan will appear here...</div>
                 </div>
@@ -229,7 +231,9 @@
     </div>
 
     <!-- Load scripts -->
-    <script src="js/app.js"></script>
+    <!-- Load operations first -->
     <script src="js/operations.js"></script>
+    <!-- Load app second -->
+    <script src="js/app.js"></script>
 </body>
 </html>
