@@ -168,7 +168,7 @@ header p {
     cursor: pointer;
     font-size: 11px;
     font-family: var(--font-family);
-    transition: none;
+    transition: background-color 0.1s ease-out, border-color 0.1s ease-out;
     white-space: nowrap;
     min-width: 75px;
     text-align: center;
@@ -177,6 +177,7 @@ header p {
 .control-buttons button:hover {
     background-color: var(--xp-button-hover);
     border-color: #316AC5;
+    box-shadow: 1px 1px 0 0 #505050;
 }
 
 .control-buttons button:active {
@@ -186,6 +187,7 @@ header p {
     border-left-color: var(--xp-button-border-outer);
     box-shadow: inset 1px 1px 0 0 rgba(0,0,0,0.2);
     padding: 3px 11px 2px 13px;
+    transition-duration: 0s;
 }
 
 .control-buttons button:disabled {
@@ -240,6 +242,7 @@ header p {
     align-items: center;
     gap: 8px;
     border-radius: 0;
+    transition: background-color 0.3s ease-out, border-color 0.3s ease-out;
 }
 
 #status-container.error {
@@ -255,21 +258,52 @@ header p {
 .loading-dots span {
     display: inline-block;
     opacity: 0;
-    animation: loading-blink 1.4s infinite both;
+    animation: loading-blink 1.5s infinite ease-in-out;
     font-size: 14px;
     line-height: 1;
+    margin: 0 1px;
 }
 .loading-dots span:nth-child(1) { animation-delay: 0s; }
-.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+.loading-dots span:nth-child(2) { animation-delay: 0.3s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.6s; }
 
 @keyframes loading-blink {
-    0%, 80%, 100% { opacity: 0; }
-    40% { opacity: 1; }
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1); }
 }
+
+/* Add a new pulsing animation for the status container background */
+@keyframes status-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 120, 215, 0.4); } /* Default blue pulse */
+    70% { box-shadow: 0 0 0 8px rgba(0, 120, 215, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 120, 215, 0); }
+}
+
+@keyframes status-pulse-generating { /* Greenish pulse */
+    0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(76, 175, 80, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+@keyframes status-pulse-planning { /* Blueish pulse */
+    0% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(33, 150, 243, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
+}
+/* Add more specific pulses if desired, matching the background colors */
 
 #plan-area {
     display: none;
+    /* Add transition for smoother appearance/disappearance */
+    transition: opacity 0.3s ease-out, max-height 0.3s ease-out;
+    opacity: 1;
+    max-height: 300px; /* Adjust as needed */
+}
+
+#plan-area:not([style*="display: block"]) { /* Crude check if not visible */
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    margin-bottom: 0; /* Collapse margin when hidden */
 }
 
 #plan-area .xp-window-content {
@@ -285,52 +319,93 @@ header p {
     background-color: var(--xp-window-bg);
     line-height: 1.4;
     box-shadow: inset 1px 1px 1px rgba(0,0,0,0.1);
+    /* Smooth scroll behavior */
+    scroll-behavior: smooth;
 }
 
 .plan-step {
     margin-bottom: 4px;
-    padding: 2px 5px;
-    border-radius: 0;
-    transition: none;
+    padding: 3px 6px;
+    border-radius: 2px;
+    transition: background-color 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out, opacity 0.3s ease-out, color 0.3s ease-out;
     display: flex;
     align-items: center;
     gap: 6px;
     border: 1px solid transparent;
+    border-left-width: 3px;
+    border-left-color: transparent;
 }
 
 .plan-step:focus {
     outline: 1px dotted #000;
     outline-offset: -2px;
-    border: 1px solid #7F9DB9;
+    border-color: #7F9DB9;
 }
 
 .plan-step .icon {
     font-size: 11px;
-    min-width: 14px;
+    min-width: 16px;
     text-align: center;
+    opacity: 0.9;
+}
+.plan-step .icon:first-of-type {
+    font-weight: bold;
+}
+
+/* Add a subtle pulsing border/glow to the current step */
+@keyframes current-step-glow {
+    0%, 100% { border-color: #FFD700; box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 0 3px #FFD700; }
+    50% { border-color: #FFEC8B; box-shadow: 0 1px 2px rgba(0,0,0,0.15), 0 0 6px #FFEC8B; }
 }
 
 .plan-step.current-step {
-    background-color: #FFE4B5;
-    border: 1px dotted #D2691E;
-    outline: none;
+    background-color: #FFFACD;
+    border-color: #FFD700;
+    border-left-color: #FFD700;
+    /* Remove previous box-shadow, let animation handle it */
+    font-weight: bold;
+    /* Apply the glow animation */
+    animation: current-step-glow 2s infinite ease-in-out;
 }
-.plan-step.current-step .icon { color: #D2691E; }
+.plan-step.current-step .icon { opacity: 1; }
 
 .plan-step.completed-step {
     color: var(--plan-done-text);
     text-decoration: none;
-    opacity: 0.8;
+    /* Slightly different visual cue for completion */
+    opacity: 0.7;
+    background-color: #E8F5E9; /* Lighter green background */
+    border-left-color: #81C784; /* Softer green border */
 }
-.plan-step.completed-step .icon { color: #388E3C; }
+.plan-step.completed-step:hover {
+    opacity: 1;
+    background-color: #C8E6C9;
+}
+.plan-step.completed-step .icon { color: #388E3C; opacity: 1; }
 
 .plan-step.failed-step {
     background-color: #FFEBEE;
     color: var(--plan-fail-text);
     font-weight: bold;
     border: 1px solid var(--plan-fail-text);
+    border-left-width: 3px;
+    border-left-color: var(--plan-fail-text);
+    box-shadow: 0 1px 2px rgba(200,0,0,0.15);
+     /* Add a subtle shake animation on fail? Optional. */
+    /* animation: shake-horizontal 0.5s cubic-bezier(.36,.07,.19,.97) both; */
 }
-.plan-step.failed-step .icon { color: var(--plan-fail-text); }
+.plan-step.failed-step .icon { color: var(--plan-fail-text); opacity: 1; }
+
+/* Optional: Shake animation for failed steps */
+/*
+@keyframes shake-horizontal {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70% { transform: translateX(-5px); }
+  20%, 40%, 60% { transform: translateX(5px); }
+  80% { transform: translateX(3px); }
+  90% { transform: translateX(-3px); }
+}
+*/
 
 .main-content {
     display: flex;
@@ -733,4 +808,53 @@ footer {
 /* Ensure window content padding doesn't make things too tight */
 .code-area > .xp-window-inner-border > .xp-window-content {
     padding: 5px 10px 8px 10px;
-} 
+}
+
+/* Style based on the step type icon (added in app.js) */
+/* Use data-step-type attribute (needs update in app.js updatePlanDisplay) */
+.plan-step[data-step-type="feature"] { border-left-color: #4CAF50; } /* Green for features */
+.plan-step[data-step-type="ux-css"] { border-left-color: #2196F3; } /* Blue for UX/CSS */
+.plan-step[data-step-type="bugfix"] { border-left-color: #f44336; } /* Red for bug fixes */
+.plan-step[data-step-type="quality"] { border-left-color: #FFC107; } /* Yellow for quality/refactor */
+.plan-step[data-step-type="test"] { border-left-color: #9C27B0; } /* Purple for testing */
+.plan-step[data-step-type="analysis"] { border-left-color: #795548; } /* Brown for analysis/review */
+.plan-step[data-step-type="generic"] { border-left-color: #9E9E9E; } /* Grey for generic */
+
+/* Status background hints based on purpose (requires JS change) */
+#status-container[data-status-purpose="generating"] { background-color: #E8F5E9; border-color: #A5D6A7;}
+#status-container[data-status-purpose="planning"] { background-color: #E3F2FD; border-color: #90CAF9;}
+#status-container[data-status-purpose="developing_feature"] { background-color: #F1F8E9; border-color: #C5E1A5;}
+#status-container[data-status-purpose="fixing_styles"] { background-color: #FFF8E1; border-color: #FFE082;}
+#status-container[data-status-purpose="improving_robustness"] { background-color: #FFFDE7; border-color: #FFF59D;}
+#status-container[data-status-purpose="fixing"] { background-color: #FCE4EC; border-color: #F8BBD0;}
+#status-container[data-status-purpose="quality_assurance"] { background-color: #EDE7F6; border-color: #B39DDB;}
+#status-container[data-status-purpose="researching"] { background-color: #E0F7FA; border-color: #80DEEA;}
+#status-container[data-status-purpose="refining"] { background-color: #F3E5F5; border-color: #CE93D8;}
+#status-container[data-status-purpose="regenerating"] { background-color: #FFF9C4; border-color: #FFF176;}
+/* Default thinking state */
+#status-container[data-status-purpose="thinking"] { background-color: #F5F4EA; border-color: var(--xp-border-dark); }
+
+/* Apply pulsing animation when loading, potentially varying by purpose */
+#status-container:has(#loading-indicator[style*="inline-block"]) {
+    /* Default pulse */
+    animation: status-pulse 1.8s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+/* Optional: Specific pulse animations based on purpose when loading */
+#status-container[data-status-purpose="generating"]:has(#loading-indicator[style*="inline-block"]) {
+    animation: status-pulse-generating 1.8s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+#status-container[data-status-purpose="planning"]:has(#loading-indicator[style*="inline-block"]) {
+    animation: status-pulse-planning 1.8s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+/* Add others if you created more specific pulse keyframes */
+
+/* Quality Enhancements (from Final Pass) */
+/* Example: Subtle transitions for visual feedback */
+button, .plan-step {
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, opacity 0.3s ease;
+}
+
+/* Ensure good spacing and alignment consistency */
+/* Removed the empty .controls .xp-window-content > * {} rule from line 858 */
+
+/* ... potentially other existing code ... */ 
